@@ -29,18 +29,19 @@ class Resto_db {
     final maps =
         await _db.query('Post', columns: null, where: 'id=?', whereArgs: [id]);
     if (maps.length > 0) {
-      return PostResto.fromDb(maps.first);
+      return PostResto.fromMap(maps.first);
     }
     return null;
   }
 
-  fetchAll() async{
-    // Future<dynamic> affiche = _db.query('Post');
-    // affiche.then((v)=>print(v));
-    // return await affiche;
-     final affiche = await _db.query('Post');
-     return affiche;
+  Future<List<PostResto>> fetchAll() async{
+    var res = await _db.query('Post');
+      List<PostResto> list =
+        res.isNotEmpty ? res.map((c) => PostResto.fromMap(c)).toList() : [];
+    return list;
   }
+
+
   deleteItem(int id) async{
     return await _db.delete('Post',where: 'id=?',whereArgs: [id]);
   }
