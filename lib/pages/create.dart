@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:exam/db_helper/resto_db.dart';
 import 'package:exam/models/postResto.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 class CreateResto extends StatefulWidget {
   @override
@@ -11,13 +14,41 @@ class CreateResto extends StatefulWidget {
 }
 
 class _CreateRestoState extends State<CreateResto> {
-  TextEditingController titleController = new TextEditingController();
-  TextEditingController bodyController = new TextEditingController();
-  final resto =Resto_db();
-   void initState() {
+  TextEditingController nomController = new TextEditingController();
+  TextEditingController villeController = new TextEditingController();
+  TextEditingController communeController = new TextEditingController();
+  TextEditingController typeController = new TextEditingController();
+  TextEditingController sigleController = new TextEditingController();
+  TextEditingController numeroController = new TextEditingController();
+  Uint8List _bytesImage;
+  File _image;
+  String base64Image;
+
+  Future getImage() async {
+    var image2 = await ImagePicker.pickImage(
+      source: ImageSource.gallery,
+    );
+    List<int> imageBytes = image2.readAsBytesSync();
+    print(imageBytes);
+    base64Image = base64Encode(imageBytes);
+    print('string is');
+    print(base64Image);
+    print("You selected gallery image : " + image2.path);
+
+    _bytesImage = Base64Decoder().convert(base64Image);
+
+    setState(() {
+      _image = image2;
+    });
+  }
+  
+
+  final resto = Resto_db();
+  void initState() {
     resto.init();
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,6 +69,12 @@ class _CreateRestoState extends State<CreateResto> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height / 7,
                   ),
+                  Center(
+                      child: _image == null
+                          ? Container()
+                          : CircleAvatar(
+                              maxRadius: 50,
+                              backgroundImage: FileImage(_image))),
                   SizedBox(height: 30),
                   Padding(
                     padding: EdgeInsets.only(left: 30),
@@ -53,15 +90,15 @@ class _CreateRestoState extends State<CreateResto> {
                           child: Container(
                             margin: EdgeInsets.only(left: 30, right: 30),
                             child: TextField(
-                              controller: titleController,
+                              controller: nomController,
                               style: TextStyle(color: Colors.pink),
                               decoration: InputDecoration(
                                   border: InputBorder.none,
                                   icon: Icon(
-                                    Icons.person,
+                                    Icons.fastfood,
                                     color: Color.fromRGBO(255, 88, 100, 1),
                                   ),
-                                  hintText: "titre",
+                                  hintText: "nom du resto",
                                   hintStyle: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     color: Colors.black54,
@@ -77,7 +114,9 @@ class _CreateRestoState extends State<CreateResto> {
                             decoration: BoxDecoration(
                                 shape: BoxShape.circle, color: Colors.white),
                             child: IconButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                getImage();
+                              },
                               icon: Icon(FontAwesomeIcons.camera,
                                   color: Color.fromRGBO(255, 88, 100, 0.5)),
                             ))
@@ -95,15 +134,127 @@ class _CreateRestoState extends State<CreateResto> {
                     child: Container(
                       margin: EdgeInsets.only(left: 30, right: 30),
                       child: TextField(
-                        controller: bodyController,
+                        controller: sigleController,
                         style: TextStyle(color: Colors.pink),
                         decoration: InputDecoration(
                             border: InputBorder.none,
                             icon: Icon(
-                              FontAwesomeIcons.facebookMessenger,
+                              Icons.edit,
                               color: Color.fromRGBO(255, 88, 100, 1),
                             ),
-                            hintText: "Body",
+                            hintText: "Sigle du resto",
+                            hintStyle: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black54,
+                              fontSize: 17,
+                            )),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Container(
+                    height: 55,
+                    width: 300,
+                    //margin: EdgeInsets.only(left:30, right:30),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100)),
+                    child: Container(
+                      margin: EdgeInsets.only(left: 30, right: 30),
+                      child: TextField(
+                        controller: typeController,
+                        style: TextStyle(color: Colors.pink),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              Icons.edit_attributes,
+                              color: Color.fromRGBO(255, 88, 100, 1),
+                            ),
+                            hintText: "Type du resto",
+                            hintStyle: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black54,
+                              fontSize: 17,
+                            )),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Container(
+                    height: 55,
+                    width: 300,
+                    //margin: EdgeInsets.only(left:30, right:30),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100)),
+                    child: Container(
+                      margin: EdgeInsets.only(left: 30, right: 30),
+                      child: TextField(
+                        controller: numeroController,
+                        style: TextStyle(color: Colors.pink),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              FontAwesomeIcons.phone,
+                              color: Color.fromRGBO(255, 88, 100, 1),
+                            ),
+                            hintText: "numéro du resto",
+                            hintStyle: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black54,
+                              fontSize: 17,
+                            )),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Container(
+                    height: 55,
+                    width: 300,
+                    //margin: EdgeInsets.only(left:30, right:30),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100)),
+                    child: Container(
+                      margin: EdgeInsets.only(left: 30, right: 30),
+                      child: TextField(
+                        controller: villeController,
+                        style: TextStyle(color: Colors.pink),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              FontAwesomeIcons.locationArrow,
+                              color: Color.fromRGBO(255, 88, 100, 1),
+                            ),
+                            hintText: "Ville du resto",
+                            hintStyle: TextStyle(
+                              fontWeight: FontWeight.w400,
+                              color: Colors.black54,
+                              fontSize: 17,
+                            )),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30),
+                  Container(
+                    height: 55,
+                    width: 300,
+                    //margin: EdgeInsets.only(left:30, right:30),
+                    decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(100)),
+                    child: Container(
+                      margin: EdgeInsets.only(left: 30, right: 30),
+                      child: TextField(
+                        controller: communeController,
+                        style: TextStyle(color: Colors.pink),
+                        decoration: InputDecoration(
+                            border: InputBorder.none,
+                            icon: Icon(
+                              Icons.add_location,
+                              color: Color.fromRGBO(255, 88, 100, 1),
+                            ),
+                            hintText: "Commune du resto",
                             hintStyle: TextStyle(
                               fontWeight: FontWeight.w400,
                               color: Colors.black54,
@@ -114,7 +265,6 @@ class _CreateRestoState extends State<CreateResto> {
                   ),
                   SizedBox(height: 25),
                   customButton(context),
-                  
                 ],
               ),
             )));
@@ -146,14 +296,15 @@ class _CreateRestoState extends State<CreateResto> {
               color: Colors.transparent,
               child: InkWell(
                   onTap: () {
-                   
-                    print(titleController.text.toString());
-                    print(bodyController.text.toString());
                     resto.addItem(PostResto(
-                        userId: 1,
-                        title: titleController.text.toString(),
-                        body: bodyController.text.toString()));
-                         print(resto.fetchAll());
+                        nom: nomController.text.toString(),
+                        ville: villeController.text.toString(),
+                        commune: communeController.text.toString(),
+                        type: sigleController.text.toString(),
+                        numero: numeroController.text.toString(),
+                        image: base64Image));
+                    print(resto.fetchAll());
+                    Navigator.pop(context);
                   },
                   child: Center(
                     child: customText("Valider",

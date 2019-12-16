@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:exam/models/postResto.dart';
+import '../models/postResto.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -16,12 +16,17 @@ class Resto_db {
       newDb.execute("""
         CREATE TABLE Post
         (
-          userId INTEGER,
           id INTEGER PRIMARY KEY,
-          title TEXT,
-          body TEXT
+          nom TEXT,
+          ville TEXT,
+          commune TEXT,
+          type TEXT,
+          sigle TEXT,
+          numero TEXT,
+          image TEXT
         )
           """);
+         
     });
   }
 

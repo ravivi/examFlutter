@@ -1,45 +1,59 @@
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-
-Future getPost() async {
-  final res = await http.get("https://jsonplaceholder.typicode.com/posts");
-  Iterable list = json.decode(res.body);
-  List<PostResto> arr = list.map((item) => PostResto.fromJson(item)).toList();
-  return arr;
-}
-
 class PostResto {
-  int userId;
   int id;
-  String title;
-  String body;
+  String nom;
+  String ville;
+  String commune;
 
-  PostResto({this.userId, this.id, this.title, this.body});
+  String type;
+  String sigle;
+  String numero;
+  String image;
+
+  PostResto(
+      {this.id,
+      this.nom,
+      this.ville,
+      this.commune,
+      this.type,
+      this.sigle,
+      this.numero,
+      this.image
+      });
 
   factory PostResto.fromJson(Map<String, dynamic> json) {
     return PostResto(
-      userId: json['userId'],
       id: json['id'],
-      title: json['title'],
-      body: json['body'],
+      nom: json['nom'],
+      ville: json['ville'],
+      commune: json['commune'],
+      type: json['type'],
+      sigle: json['sigle'],
+      numero: json['numero'],
+      image: json['image'],
     );
   }
-  factory PostResto.fromDb(Map<String, dynamic> map) {
+  factory PostResto.fromMap(Map<String, dynamic> map) {
     return PostResto(
-      userId: map['userId'],
       id: map['id'],
-      title:map['title'],
-      body:map['body'],
+      nom: map['nom'],
+      ville: map['ville'],
+      commune: map['commune'],
+      type: map['type'],
+      sigle: map['sigle'],
+      numero: map['numero'],
+      image: map['image'],
     );
   }
-    Map<String, dynamic> toMap() {
+  Map<String, dynamic> toMap() {
     return <String, dynamic>{
-    'userId': userId,
-    'id' : id,
-    'title' : title,
-    'body' : body
+      'id': id,
+      'nom': nom,
+      'ville': ville,
+      'commune': commune,
+      'type': type,
+      'sigle': sigle,
+      'numero': numero,
+      'image':image
     };
-   
-    
   }
 }

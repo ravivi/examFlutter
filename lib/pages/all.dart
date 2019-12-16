@@ -1,15 +1,17 @@
+import 'package:exam/provider/resto_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class All extends StatelessWidget {
-  List img =[
-    "food.jpg",
-    "resto2.jpg",
-    "resto3.jpg",
-    "resto4.jpg"
+class All extends StatefulWidget {
+  @override
+  _AllState createState() => _AllState();
+}
 
-  ];
+class _AllState extends State<All> {
+
   @override
   Widget build(BuildContext context) {
+    final restoData= Provider.of<Restos>(context);
     return Scaffold(
        appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.black,),
@@ -28,21 +30,26 @@ class All extends StatelessWidget {
         ),
       ),
       body: ListView.builder(
-        itemCount: img.length,
+        itemCount: restoData.items.length,
         itemBuilder: (context,i){
-          return myCont(context, img[i]);
+          return myCont(
+                    context,
+                    restoData.items[i].photo,
+                    restoData.items[i].nom,
+                    restoData.items[i].ville,
+                    restoData.items[i].commune,
+                  );
         },
       ),
     );
   }
-  
-  Widget myCont(BuildContext context, String image) {
+Widget myCont(BuildContext context, String image, String title, String ville, String commune) {
     return GestureDetector(
-      onTap: (){
-        Navigator.pushNamed(context, 'detail', arguments: {'image':image});
+      onTap: () {
+        Navigator.pushNamed(context, 'detail', arguments: {'image': image});
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
           boxShadow: [
@@ -61,7 +68,7 @@ class All extends StatelessWidget {
                   bottomLeft: Radius.circular(20),
                 ),
                 image: DecorationImage(
-                    image: AssetImage("images/${image}"), fit: BoxFit.fitHeight),
+                    image: NetworkImage(image), fit: BoxFit.fitHeight),
               ),
             ),
             SizedBox(
@@ -71,13 +78,13 @@ class All extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Grand Restaurant",
+                  title,
                   style: TextStyle(fontSize: 20),
                 ),
                 Row(
                   children: <Widget>[
                     Icon(Icons.add_location),
-                    Text("Abidjan, Cocody"),
+                    Text("$ville, $commune"),
                   ],
                 ),
                 Row(
@@ -97,6 +104,11 @@ class All extends StatelessWidget {
                     Icon(
                       Icons.star,
                       color: Colors.yellow,
+                    ),
+                     SizedBox(width: 30,),
+                    Icon(
+                      Icons.favorite_border,
+                      color: Colors.pinkAccent,
                     ),
                   ],
                 ),
@@ -107,4 +119,4 @@ class All extends StatelessWidget {
       ),
     );
   }
-}
+ }

@@ -4,11 +4,7 @@ import 'package:flutter/material.dart';
 class Connection extends StatefulWidget {
   @override
   _ConnectionState createState() => _ConnectionState();
-  @override
-  initState(){
-
-    
-  }
+  
   }
 
 class _ConnectionState extends State<Connection> {
@@ -41,10 +37,10 @@ class _ConnectionState extends State<Connection> {
        var result = await Connectivity().checkConnectivity();
 
        if(result == ConnectivityResult.none){
-         Navigator.popAndPushNamed(context, 'nav');
+         Navigator.popAndPushNamed(context, 'editOffline');
         
        } else{
-         Navigator.popAndPushNamed(context, 'online');
+         Navigator.popAndPushNamed(context, 'edit0nline');
        }
 
      }

@@ -1,10 +1,13 @@
 import 'package:bubble_bottom_bar/bubble_bottom_bar.dart';
 import 'package:exam/pages/edit.dart';
+import 'package:exam/pages/favoris.dart';
 import 'package:exam/pages/home.dart';
 import 'package:exam/pages/ind.dart';
 import 'package:exam/pages/login.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
+
+import 'restoScreen.dart';
 
 class Nav extends StatefulWidget {
   @override
@@ -22,9 +25,8 @@ class NavState extends State<Nav> {
   }
 
   final _pageContent = [
-    Home(),
-    Edit(),
-    Login(),
+    RestoScreen(),
+    Favorite(),
   ];
 
   @override
@@ -49,20 +51,11 @@ class NavState extends State<Nav> {
                       color: Colors.white, fontWeight: FontWeight.bold),
                 )),
             BubbleBottomBarItem(
-                backgroundColor: Colors.redAccent,
-                icon: Icon(Icons.edit, color: Colors.black),
-                activeIcon: Icon(Icons.edit, color: Colors.white),
-                title: Text(
-                  "Edit",
-                  style: TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold),
-                )),
-            BubbleBottomBarItem(
                 backgroundColor: Colors.purpleAccent,
                 icon: Icon(Icons.favorite, color: Colors.black),
                 activeIcon: Icon(Icons.favorite, color: Colors.white),
                 title: Text(
-                  "Paramètres",
+                  "Resto Favoris",
                   style: TextStyle(
                       color: Colors.white, fontWeight: FontWeight.bold),
                 )),
