@@ -1,17 +1,64 @@
 import 'package:carousel_pro/carousel_pro.dart';
+import 'package:exam/models/adressGet.dart';
+import 'package:exam/models/restoGet.dart';
+import 'package:exam/pages/drawer_app.dart';
 import 'package:exam/pages/edit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
 
 import 'all.dart';
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  List<Adresse> listeAdress = [];
+  List<Resto> listeResto = [];
+
+  @override
+  initState() {
+    charge();
+    chargeResto();
+    super.initState();
+  }
+
+  Future charge() async {
+    print('Chagement.......................');
+    List<Adresse> myList = await getListAdress();
+    print(myList);
+    setState(() {
+      print(myList.length);
+      print('depart');
+      listeAdress = myList;
+      print('Fin');
+      print(myList.length);
+    });
+  }
+
+  Future chargeResto() async {
+    print('Chagement.......................');
+    List<Resto> myList = await getList();
+    print(myList);
+    setState(() {
+      print(myList.length);
+      print('depart');
+      listeResto = myList;
+      print('Fin');
+      print(myList.length);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    print(listeResto[0].photo);
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.black,),
-       
+        iconTheme: IconThemeData(
+          color: Colors.black,
+        ),
         backgroundColor: Colors.white,
         centerTitle: true,
         elevation: 0,
@@ -20,41 +67,7 @@ class Home extends StatelessWidget {
           style: TextStyle(color: Colors.black),
         ),
       ),
-      drawer: Drawer(
-      child: Column(
-        children: <Widget>[
-          AppBar(
-            title: Text("Hello",style: TextStyle(color: Colors.white),),
-            automaticallyImplyLeading: false,
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.shop),
-            title: Text("Shop"),
-            onTap: (){
-              Navigator.of(context).pushReplacementNamed( '/');
-            },
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.payment),
-            title: Text("Commande"),
-            onTap: (){
-              
-            },
-          ),
-          Divider(),
-          ListTile(
-            leading: Icon(Icons.edit),
-            title: Text("Mes Produits"),
-            onTap: (){
-              Navigator.push(context,MaterialPageRoute(builder: (context)=>Edit()));
-            },
-          ),
-        ],
-      ),
-    ),
-  
+      drawer: Menu(context),
       body: Padding(
         padding: EdgeInsets.all(8.0),
         child: Column(
@@ -69,7 +82,7 @@ class Home extends StatelessWidget {
                   SizedBox(
                     height: 20,
                   ),
-                  Text("Ville",
+                  Text("Commune",
                       style: TextStyle(
                           fontWeight: FontWeight.w700,
                           color: Colors.grey,
@@ -80,14 +93,26 @@ class Home extends StatelessWidget {
                   Container(
                     height: 100,
                     width: MediaQuery.of(context).size.width,
-                    child: ListView(
-                      scrollDirection: Axis.horizontal,
-                      children: <Widget>[
-                        ville("Abidjan", "abidjan.jpg"),
-                        ville("Yamoussoukro", "yakro.jpg"),
-                        ville("Bouaké", "boua.jpg"),
-                        ville("Assinie", "assinie.jpg"),
-                      ],
+                    child: FutureBuilder(
+                      future: getListAdress(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemCount: listeAdress.length,
+                            itemBuilder: (context, i) {
+                              return ville(
+                                  listeAdress[i].commune, "abidjan.jpg");
+                            },
+                          );
+                        } else {
+                          return Center(
+                              child: SpinKitCircle(
+                            color: Color.fromRGBO(210, 3, 6, 1),
+                            size: 90.0,
+                          ));
+                        }
+                      },
                     ),
                   ),
                   SizedBox(
@@ -97,26 +122,70 @@ class Home extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: <Widget>[
                       Text("Restaurant",
-                      style: TextStyle(
-                          fontWeight: FontWeight.w700,
-                          color: Colors.grey,
-                          fontSize: 20)),
-                          GestureDetector(
-                            onTap: (){
-                              
-                              Navigator.push(context, PageTransition(type: PageTransitionType.upToDown,duration: Duration(milliseconds: 800), child: All()));
-                            },
-                            child: Text("Voir +", style: TextStyle(color: Colors.redAccent),),
-                          )
-
+                          style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: Colors.grey,
+                              fontSize: 20)),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              PageTransition(
+                                  type: PageTransitionType.upToDown,
+                                  duration: Duration(milliseconds: 800),
+                                  child: All()));
+                        },
+                        child: Text(
+                          "Voir +",
+                          style: TextStyle(color: Colors.redAccent),
+                        ),
+                      )
                     ],
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                  myCont(context, "resto2.jpg"),
-                  myCont(context, "resto3.jpg"),
-                  myCont(context, "resto4.jpg"),
+                  FutureBuilder(
+                    future: getList(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        return Column(
+                          children: <Widget>[
+                            myCont(
+                              context,
+                              listeResto[0].photo,
+                              listeResto[0].name,
+                              listeResto[0].address.ville,
+                              listeResto[0].address.commune,
+                              listeResto[0].tel,
+                            ),
+                            myCont(
+                              context,
+                              listeResto[1].photo,
+                              listeResto[1].name,
+                              listeResto[1].address.ville,
+                              listeResto[1].address.commune,
+                              listeResto[1].tel,
+                            ),
+                          ],
+                        );
+                      } else {
+                        return Center(
+                            child: SpinKitCircle(
+                          color: Color.fromRGBO(210, 3, 6, 1),
+                          size: 90.0,
+                        ));
+                      }
+                    },
+                  ),
+                  // myCont(
+                  //   context,
+                  //   listeResto[1].photo,
+                  //   listeResto[2].name,
+                  //   listeResto[3].address.ville,
+                  //   listeResto[0].address.commune,
+                  //   listeResto[0].tel,
+                  // ),
                 ],
               ),
             )
@@ -126,7 +195,10 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget ville(String vil, String image) {
+  Widget ville(
+    String vil,
+    String image,
+  ) {
     return Container(
       alignment: Alignment.topLeft,
       margin: EdgeInsets.only(
@@ -148,13 +220,15 @@ class Home extends StatelessWidget {
     );
   }
 
-  Widget myCont(BuildContext context, String image) {
+  Widget myCont(BuildContext context, String image, String title, String ville,
+      String commune, int numero) {
     return GestureDetector(
-      onTap: (){
-        Navigator.pushNamed(context, 'detail', arguments: {'image':image});
+      onTap: () {
+        Navigator.pushNamed(context, 'detail',
+            arguments: {'image': image, 'numero': numero});
       },
       child: Container(
-        margin: EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+        margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(20)),
           boxShadow: [
@@ -173,7 +247,7 @@ class Home extends StatelessWidget {
                   bottomLeft: Radius.circular(20),
                 ),
                 image: DecorationImage(
-                    image: AssetImage("images/${image}"), fit: BoxFit.fitHeight),
+                    image: NetworkImage(image), fit: BoxFit.fitHeight),
               ),
             ),
             SizedBox(
@@ -183,13 +257,13 @@ class Home extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Text(
-                  "Grand Restaurant",
+                  title,
                   style: TextStyle(fontSize: 20),
                 ),
                 Row(
                   children: <Widget>[
                     Icon(Icons.add_location),
-                    Text("Abidjan, Cocody"),
+                    Text("$ville, $commune"),
                   ],
                 ),
                 Row(
@@ -209,6 +283,13 @@ class Home extends StatelessWidget {
                     Icon(
                       Icons.star,
                       color: Colors.yellow,
+                    ),
+                    SizedBox(
+                      width: 30,
+                    ),
+                    Icon(
+                      Icons.favorite_border,
+                      color: Colors.pinkAccent,
                     ),
                   ],
                 ),
