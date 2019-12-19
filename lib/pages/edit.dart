@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:exam/db_helper/resto_db.dart';
-import 'package:exam/models/postResto.dart';
+import 'package:grand_resto/db_helper/db_helper.dart';
+
+import '../models/postResto.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
@@ -13,14 +14,23 @@ class Edit extends StatefulWidget {
 
 class _EditState extends State<Edit> {
   List img = ["food.jpg", "resto2.jpg", "resto3.jpg", "resto4.jpg"];
-  String DecoImage;
+  String decoImage;
     Uint8List _bytesImage;
 
-  final resto = Resto_db();
+    bool isUpdating;
+    var dbHelper;
+    Future<List<PostResto>> restos;
+  
   void initState() {
-    resto.init();
-    resto.fetchAll();
     super.initState();
+    dbHelper = DbHelper();
+    isUpdating = false;
+    refreshList();
+  }
+  refreshList(){
+    setState(() {
+      restos = dbHelper.getResto();
+    });
   }
 
   @override
@@ -46,11 +56,8 @@ class _EditState extends State<Edit> {
         ),
         backgroundColor: Colors.white,
         body: FutureBuilder(
-          future: resto.fetchAll(),
-          builder: (context, AsyncSnapshot<List<PostResto>>snapshot) {
-           
-            // List<PostResto> arr =
-            //     list.map((item) => PostResto.fromJson(item)).toList();
+          future: restos,
+          builder: (context, snapshot) {
             if (snapshot.hasData) {
               return Padding(
                 padding: EdgeInsets.all(15),
@@ -58,13 +65,13 @@ class _EditState extends State<Edit> {
                   itemCount: snapshot.data.length,
                   itemBuilder: (_, i) {
                      PostResto item = snapshot.data[i];
-                      DecoImage=item.image;
-                     _bytesImage = Base64Decoder().convert(DecoImage);
+                      decoImage=item.image;
+                     _bytesImage = Base64Decoder().convert(decoImage);
                     return Dismissible(
                       key: ValueKey(item.id),
                       direction: DismissDirection.endToStart,
                       onDismissed: (direction) {
-                        resto.deleteItem(item.id);
+                        dbHelper.delete(item.id);
                       },
                       confirmDismiss: (direction) {
                         return showDialog(
@@ -120,7 +127,8 @@ class _EditState extends State<Edit> {
                                     icon: Icon(Icons.delete),
                                     color: Theme.of(context).errorColor,
                                     onPressed: () {
-                                      resto.deleteItem(item.id);
+                                     dbHelper.delete(item.id);
+                                     refreshList();
                                     },
                                   ),
                                 ],
@@ -134,7 +142,10 @@ class _EditState extends State<Edit> {
                   },
                 ),
               );
-            } else {
+            } if(null == snapshot.data || snapshot.data.length == 0){
+              return Center(child: Text("Aucune Données dans la base de donnée"),);
+            }
+             
               return Center(
               child: SpinKitCircle(
                 color: Color.fromRGBO(210, 3, 6, 1),
@@ -142,7 +153,7 @@ class _EditState extends State<Edit> {
               ),
             
               );
-            }
+            
           },
         ));
   }

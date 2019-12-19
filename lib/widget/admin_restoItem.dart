@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import '../provider/resto_provider.dart';
 import 'package:provider/provider.dart';
@@ -5,7 +7,7 @@ import 'package:provider/provider.dart';
 class AdminRestoItem extends StatelessWidget {
   final String id;
   final String title;
-  final String image;
+  final Uint8List image;
 
   const AdminRestoItem(this.id,this.title, this.image);
   
@@ -15,7 +17,7 @@ class AdminRestoItem extends StatelessWidget {
     return ListTile(
       leading: CircleAvatar(
         backgroundColor: Colors.white,
-        backgroundImage: NetworkImage(image),
+        backgroundImage: MemoryImage(image),
         maxRadius: 30,
       ),
       title: Text(title),

@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:page_transition/page_transition.dart';
@@ -16,6 +19,9 @@ class RestoScreen extends StatefulWidget {
 class _RestoScreenState extends State<RestoScreen> {
   var _isInit = true;
   var _isLoaded = false;
+   String decoImage;
+  Uint8List _bytesImage;
+            
   @override
   void initState() {
     //Provider.of<Products>(context, listen: false).fetchAndSetProduct();
@@ -48,6 +54,8 @@ class _RestoScreenState extends State<RestoScreen> {
   @override
   Widget build(BuildContext context) {
     final restoContainer = Provider.of<Restos>(context, listen: false);
+      // decoImage = restoContainer.items[0].photo;
+      //       _bytesImage = Base64Decoder().convert(decoImage);
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(
@@ -137,22 +145,15 @@ class _RestoScreenState extends State<RestoScreen> {
                         ),
                         Column(
                           children: <Widget>[
-                            myCont(
-                              context,
-                              restoContainer.items[0].photo,
-                              restoContainer.items[0].nom,
-                              restoContainer.items[0].ville,
-                              restoContainer.items[0].commune,
-                              restoContainer.items[0].tel,
-                            ),
-                            myCont(
-                              context,
-                              restoContainer.items[1].photo,
-                              restoContainer.items[1].nom,
-                              restoContainer.items[1].ville,
-                              restoContainer.items[1].commune,
-                              restoContainer.items[1].tel,
-                            ),
+                          //  (restoContainer.items[0]=null)? Container(): myCont(
+                          //     context,
+                          //     _bytesImage,
+                          //     restoContainer.items[0].nom,
+                          //     restoContainer.items[0].ville,
+                          //     restoContainer.items[0].commune,
+                          //     restoContainer.items[0].tel,
+                          //   ),
+                          
                           ],
                         )
                       ],
@@ -189,7 +190,7 @@ class _RestoScreenState extends State<RestoScreen> {
     );
   }
 
-  Widget myCont(BuildContext context, String image, String title, String ville,
+  Widget myCont(BuildContext context, Uint8List image, String title, String ville,
       String commune, String numero) {
     return GestureDetector(
       onTap: () {
@@ -216,7 +217,7 @@ class _RestoScreenState extends State<RestoScreen> {
                   bottomLeft: Radius.circular(20),
                 ),
                 image: DecorationImage(
-                    image: NetworkImage(image), fit: BoxFit.fitHeight),
+                    image: MemoryImage(image), fit: BoxFit.fitHeight),
               ),
             ),
             SizedBox(

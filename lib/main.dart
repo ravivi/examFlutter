@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
           'all':(context) =>All(),
           'create':(context)=>CreateResto(),
           'createOnline':(context)=>CreateRestoOnline(),
+          'editView':(context)=>Edit(),
           'editOffline':(context)=> Edit(),
           'edit0nline':(context)=> AdminRestoScreen()
         },

@@ -1,6 +1,4 @@
-import 'package:exam/pages/createOnline.dart';
-import 'package:exam/pages/edit.dart';
-import 'package:exam/pages/testConnexion.dart';
+import '../pages/testConnexion.dart';
 import 'package:flutter/material.dart';
 
 Widget Menu(context) {

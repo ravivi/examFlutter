@@ -2,17 +2,11 @@ import 'dart:io';
 
 import 'package:animated_floatactionbuttons/animated_floatactionbuttons.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_launch/flutter_launch.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Detail extends StatelessWidget {
-  void whatsAppOpen() async {
-    await FlutterLaunch.launchWathsApp(
-        phone: "+22577986360",
-        message:
-            "Bonjour C'est par rapport a la maison là maison je suis intéréssé");
-  }
+
   @override
   Widget build(BuildContext context) {
     Map<String, Object> args =
@@ -158,7 +152,6 @@ class Detail extends StatelessWidget {
       child: FloatingActionButton(
         backgroundColor: Colors.green,
         onPressed: () {
-          whatsAppOpen();
         },
         heroTag: "whatsapp",
         tooltip: 'whatsapp',
@@ -180,12 +173,7 @@ class PageSilv extends StatefulWidget{
 }
 class PageSilvState extends State<PageSilv> {
  
- void whatsAppOpen() async {
-    await FlutterLaunch.launchWathsApp(
-        phone: "+22577986360",
-        message:
-            "Bonjour C'est par rapport a la maison là maison je suis intéréssé");
-  }
+
   @override
   Widget build(BuildContext context) {
      Map<String, Object> args =
@@ -349,7 +337,7 @@ class PageSilvState extends State<PageSilv> {
       child: FloatingActionButton(
         backgroundColor: Colors.green,
         onPressed: () {
-          whatsAppOpen();
+
         },
         heroTag: "whatsapp",
         tooltip: 'whatsapp',

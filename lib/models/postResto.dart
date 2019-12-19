@@ -45,7 +45,7 @@ class PostResto {
     );
   }
   Map<String, dynamic> toMap() {
-    return <String, dynamic>{
+    var map = {
       'id': id,
       'nom': nom,
       'ville': ville,
@@ -55,5 +55,6 @@ class PostResto {
       'numero': numero,
       'image':image
     };
+    return map;
   }
 }

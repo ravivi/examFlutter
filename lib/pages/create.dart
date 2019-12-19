@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:exam/db_helper/resto_db.dart';
-import 'package:exam/models/postResto.dart';
+import 'package:grand_resto/db_helper/db_helper.dart';
+
+import '../db_helper/resto_db.dart';
+import '../models/postResto.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
@@ -43,9 +45,9 @@ class _CreateRestoState extends State<CreateResto> {
   }
   
 
-  final resto = Resto_db();
+  final resto = DbHelper();
   void initState() {
-    resto.init();
+    resto.initDb();
     super.initState();
   }
 
@@ -61,7 +63,7 @@ class _CreateRestoState extends State<CreateResto> {
                     fit: BoxFit.cover,
                     colorFilter:
                         ColorFilter.mode(Colors.black54, BlendMode.darken),
-                    image: AssetImage("images/resto2.jpg"))),
+                    image: AssetImage("images/resto3.jpg"))),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -296,15 +298,15 @@ class _CreateRestoState extends State<CreateResto> {
               color: Colors.transparent,
               child: InkWell(
                   onTap: () {
-                    resto.addItem(PostResto(
+                    resto.save(PostResto(
                         nom: nomController.text.toString(),
                         ville: villeController.text.toString(),
                         commune: communeController.text.toString(),
                         type: sigleController.text.toString(),
                         numero: numeroController.text.toString(),
                         image: base64Image));
-                    print(resto.fetchAll());
-                    Navigator.pop(context);
+                    print(resto.getResto());
+                    Navigator.popAndPushNamed(context, 'editView');
                   },
                   child: Center(
                     child: customText("Valider",

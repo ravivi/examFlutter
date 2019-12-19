@@ -1,4 +1,7 @@
-import 'package:exam/provider/resto_provider.dart';
+import 'dart:convert';
+import 'dart:typed_data';
+
+import '../provider/resto_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,6 +11,8 @@ class All extends StatefulWidget {
 }
 
 class _AllState extends State<All> {
+    String decoImage;
+  Uint8List _bytesImage;
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +37,11 @@ class _AllState extends State<All> {
       body: ListView.builder(
         itemCount: restoData.items.length,
         itemBuilder: (context,i){
+            decoImage = restoData.items[i].photo;
+            _bytesImage = Base64Decoder().convert(decoImage);
           return myCont(
                     context,
-                    restoData.items[i].photo,
+                    _bytesImage,
                     restoData.items[i].nom,
                     restoData.items[i].ville,
                     restoData.items[i].commune,
@@ -43,7 +50,7 @@ class _AllState extends State<All> {
       ),
     );
   }
-Widget myCont(BuildContext context, String image, String title, String ville, String commune) {
+Widget myCont(BuildContext context, Uint8List image, String title, String ville, String commune) {
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, 'detail', arguments: {'image': image});
@@ -68,7 +75,7 @@ Widget myCont(BuildContext context, String image, String title, String ville, St
                   bottomLeft: Radius.circular(20),
                 ),
                 image: DecorationImage(
-                    image: NetworkImage(image), fit: BoxFit.fitHeight),
+                    image: MemoryImage(image), fit: BoxFit.fitHeight),
               ),
             ),
             SizedBox(
